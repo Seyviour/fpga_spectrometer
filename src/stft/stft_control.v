@@ -18,9 +18,9 @@ module STFT_CONTROL #(
     input wire clk,  //27Mhz
     input wire RESET, 
     input wire SAMPLE_VALID, // from i2s clock domain 
-    input wire [24:0] i_SAMPLE, // from i2s clock domain
+    input wire [23:0] i_SAMPLE, // from i2s clock domain
 
-    output reg [24:0] o_SAMPLE,
+    output reg [23:0] o_SAMPLE,
     output reg start_compute
 );
 
