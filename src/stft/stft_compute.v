@@ -8,7 +8,7 @@ module SPU #(
     FFT_SIZE = 512
 )(
     input wire clk, 
-    input wire [WORD_WIDTH-1: 0] sample_diff,
+    input wire signed [WORD_WIDTH-1: 0] sample_diff,
     input wire [2*WORD_WIDTH-1: 0] twiddle, 
     input wire [2*WORD_WIDTH-1: 0] Xk_prev,
     input wire wr_en,
@@ -32,12 +32,21 @@ localparam MULTIPLIER_DELAY = 3;
 
 wire [2*WORD_WIDTH-1: 0] product;
 
+wire signed [WORD_WIDTH-1:0] Xk_prev_real, Xk_prev_imag;
+assign Xk_prev_real = Xk_prev[WORD_WIDTH*2-1: WORD_WIDTH];
+assign Xk_prev_imag = Xk_prev[WORD_WIDTH-1: 0];
+
+wire signed [WORD_WIDTH-1: 0] Xk_prev_real_plus;
+assign Xk_prev_real_plus =  Xk_prev_real + sample_diff;
+
+wire [WORD_WIDTH*2-1:0] Xk_prev_plus;
+assign Xk_prev_plus = {Xk_prev_real_plus, Xk_prev_imag};
 
 cMult #(.word_size(WORD_WIDTH)) this_complex_multiplier
     (   .clk(clk),
         .i_valid(1'b1),
         .A(twiddle), //INPUT
-        .B((Xk_prev+sample_diff)), //INPUT 
+        .B(Xk_prev_plus), //INPUT **XK_prev(real) _ sample_diff 
         .C(Xk) //OUTPUT
     );
 
