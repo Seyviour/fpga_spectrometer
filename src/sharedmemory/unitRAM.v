@@ -16,10 +16,10 @@ localparam no_words = (2**address_width);
     Gowin_SDPB aUnitRAM(
         .dout(rd_data), //output [3:0] dout
         .clka(clk), //input clka
-        .cea(1'b1), //input cea
+        .cea(wr_en), //input cea
         .reseta(1'b0), //input reseta
         .clkb(clk), //input clkb
-        .ceb(1'b1), //input ceb
+        .ceb(wr_en), //input ceb
         .resetb(1'b0), //input resetb
         .oce(1'b1), //input oce
         .ada(wr_address), //input [11:0] ada
