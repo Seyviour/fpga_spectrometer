@@ -2,9 +2,8 @@ module twiddleROM #(
     parameter
     N = 32,
     word_size = 16,
-    memory_file_real = "/home/saviour/study/fft_hdl/data/out.real"
+    memory_file = "/home/saviour/study/fft_hdl/data/out.real"
 ) (
-    input wire clk,
     input wire [$clog2(N)-1: 0] read_address,
     output wire [word_size*2-1: 0] twiddle
     // output reg [word_size-1: 0] twiddle_im
@@ -15,12 +14,12 @@ module twiddleROM #(
 //I JUST COULDN'T THINK OF A BETTER NAME
 
 
-reg [word_size-1:0] twiddleROM [N-1:0];
+reg [word_size*2-1:0] twiddleROM [N-1:0];
 
 //reg [$clog2(N)-1: 0] reg_read_address; 
 
 initial begin
-    $readmemh(memory_file_real, twiddleROM);
+    $readmemh(memory_file, twiddleROM);
 end
 
 // initial begin
