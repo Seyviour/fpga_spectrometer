@@ -13,15 +13,30 @@ module unitRAM #(
 
 localparam no_words = (2**address_width);
 
+    Gowin_SDPB aUnitRAM(
+        .dout(rd_data), //output [3:0] dout
+        .clka(clk), //input clka
+        .cea(1'b1), //input cea
+        .reseta(1'b0), //input reseta
+        .clkb(clk), //input clkb
+        .ceb(1'b1), //input ceb
+        .resetb(1'b0), //input resetb
+        .oce(1'b1), //input oce
+        .ada(wr_address), //input [11:0] ada
+        .din(wr_data), //input [3:0] din
+        .adb(rd_address) //input [11:0] adb
+    );
 
-reg [no_words-1: 0] RAM [word_width-1: 0];
 
-always @(posedge clk) begin
-    if (wr_en) 
-        RAM[wr_address] <= wr_data;
-end
 
-assign rd_data = RAM[rd_address]; 
+//reg [no_words-1: 0] RAM [word_width-1: 0];
+
+//always @(posedge clk) begin
+//    if (wr_en) 
+//        RAM[wr_address] <= wr_data;
+//end
+
+//assign rd_data = RAM[rd_address]; 
 
     
 endmodule
