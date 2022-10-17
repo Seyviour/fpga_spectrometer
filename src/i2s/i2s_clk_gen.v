@@ -7,9 +7,10 @@ module i2s_clk_gen (
 
 wire i2s_clk_8x;
 wire lock; 
-rpll_i2s_clk_8x i2s_clk_8x(
+rpll_i2s_clk_8x i2s_clk_8x_m(
         .clkout(i2s_clk_8x), //output clkout
-        .clkin(clk_in) //input clkin
+        .clkin(clk_in), //input clkin
+        .lock_o(lock)
     );
 
 gowin_i2s_clk_div_8 clk_div_8(
