@@ -44,6 +44,7 @@ assign Xk_prev_plus = {Xk_prev_real_plus, Xk_prev_imag};
 
 cMult #(.word_size(WORD_WIDTH)) this_complex_multiplier
     (   .clk(clk),
+        .reset(1'b0),
         .i_valid(1'b1),
         .A(twiddle), //INPUT
         .B(Xk_prev_plus), //INPUT **XK_prev(real) _ sample_diff 
