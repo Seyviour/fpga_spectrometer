@@ -8,13 +8,13 @@ module pulseDetectCount #(
     input wire clk,
     input wire reset, 
     input wire wr_en, 
-    output wire disp_wr_en
+    output wire disp_wr_en,
+    output wire pulse
 );
 
     reg [$clog2(COUNTHIGH)-1: 0] count; 
     reg wr_en_R;
 
-    wire pulse;
 
     always @(posedge clk) begin 
         if (pulse)
