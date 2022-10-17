@@ -52,13 +52,13 @@ always @(posedge clk) begin
 
             BUSY: begin
                 sample_wr_en <= 1'b0;
-                idx <= idx + 1;
+                idx <= idx + 1'b1;
                 if (&idx) begin
                      
                     COMPUTE_STATE <= IDLE;
                     wr_en <= 0;
                     oldest_sample_address <= (oldest_sample_address + 1'b1);
-                    disp_period_count <= (disp_period_count < disp_period)? disp_period_count+1: 0;
+                    disp_period_count <= (disp_period_count < disp_period)? disp_period_count+1'b1: 0;
                 end
             end
             
