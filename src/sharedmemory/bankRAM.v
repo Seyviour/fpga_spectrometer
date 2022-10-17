@@ -1,4 +1,4 @@
-`include "/home/saviour/study/fpga_spectrogram/src/sharedmemory/unitRAM.v"
+// `include "/home/saviour/study/fpga_spectrogram/src/sharedmemory/unitRAM.v"
 
 module bankRAM #(
     parameter
@@ -39,15 +39,17 @@ endgenerate
 
 always @(*) begin
     case(rd_bank_select)
-
-    8'b00000001: rd_data = all_reads[word_width-1: 0];
-    8'b00000010: rd_data = all_reads[word_width*2-1: word_width];
-    8'b00000100: rd_data = all_reads[word_width*3-1: word_width*2];
-    8'b00001000: rd_data = all_reads[word_width*4-1: word_width*3];
-    8'b00010000: rd_data = all_reads[word_width*5-1: word_width*4];
-    8'b00100000: rd_data = all_reads[word_width*6-1: word_width*5]; 
-    8'b01000000: rd_data = all_reads[word_width*7-1: word_width*6];
-    8'b10000000: rd_data = all_reads[word_width*8-1: word_width*7];
+    
+      no_banks'(2**0): rd_data = all_reads[word_width-1: 0]; 
+      no_banks'(2**1): rd_data = all_reads[word_width*2-1: 0]; 
+//    8'b00000001: rd_data = all_reads[word_width-1: 0];
+//    8'b00000010: rd_data = all_reads[word_width*2-1: word_width];
+//    8'b00000100: rd_data = all_reads[word_width*3-1: word_width*2];
+//    8'b00001000: rd_data = all_reads[word_width*4-1: word_width*3];
+//    8'b00010000: rd_data = all_reads[word_width*5-1: word_width*4];
+//    8'b00100000: rd_data = all_reads[word_width*6-1: word_width*5]; 
+//    8'b01000000: rd_data = all_reads[word_width*7-1: word_width*6];
+//    8'b10000000: rd_data = all_reads[word_width*8-1: word_width*7];
     default: rd_data = 0; 
 
 
