@@ -1,4 +1,4 @@
-This is an (ongoing) implementation of an audio spectrogram targetting the GW1NR-9 on the Tang Nano 9K.
+This is an (ongoing) implementation of an audio spectrometer targetting the GW1NR-9 on the Tang Nano 9K.
 
 
 PROJECT DETAILS 
