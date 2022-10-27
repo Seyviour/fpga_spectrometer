@@ -43,9 +43,12 @@ reg [FFT_IDX_WIDTH-1:0] CURR_FFT_IDX;
 
 reg [RAM_ADDR_WIDTH-1: 0] offset; 
 
-always @(posedge clk) begin
 
-    IDX_SUM <= OLDEST_FFT_IDX + i_y[4+:FFT_IDX_WIDTH];
+always @(*) begin
+    IDX_SUM = OLDEST_FFT_IDX + i_y[4+:FFT_IDX_WIDTH];
+end
+
+always @(posedge clk) begin
     if (IDX_SUM <= (NO_FFTS-1))
         CURR_FFT_IDX <= IDX_SUM;
     else
