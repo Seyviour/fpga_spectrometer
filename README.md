@@ -10,3 +10,18 @@ _________________
 
 - Display is over the HDMI/DVI port on the Tang Nano 9K;
 
+
+CURRENT STATE OF AFFAIRS
+_________________________
+
+With the simulated mic input, this comes out on the display:
+
+![Unfinished spectrometer](doc/spectro.gif)
+
+
+
+Definitely not ideal, but progress nonetheless.
+
+I suspect that there's a problem with the FFT draw order. It appears to be working in reverse (newer FFTs(spectral lines?) should be at the top and older ones at the bottom)
+
+As soon as everything works as intended, the spectrogram itself will be centered; the extra blue area will be used to display axes data/scales.
