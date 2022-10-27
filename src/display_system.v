@@ -68,6 +68,9 @@ delayShiftRegister #(.DATA_WIDTH(3), .DELAY_CYCLES(5)) thisSyncDelay
         .dataout(hve_sync_d)
     );
 
+always @(*)
+    outside_box = (sx > 511 | sy > 399);
+
 always @(posedge hdmi_clk) begin
     if (outside_box_d)
         rgb <= {8'b0, 8'b0, 8'd45};
