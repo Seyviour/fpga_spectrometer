@@ -12,10 +12,8 @@ module SPU #(
     input wire [2*WORD_WIDTH-1: 0] twiddle, 
     input wire [2*WORD_WIDTH-1: 0] Xk_prev,
     input wire wr_en,
-    input wire i_disp_wr_en, 
 
     output wire o_wr_en,
-    output wire o_disp_wr_en,  
     input wire [$clog2(FFT_SIZE)-1:0] i_idx,
     output wire [2*WORD_WIDTH-1: 0] Xk,
     output wire [$clog2(FFT_SIZE)-1:0] o_idx
@@ -61,9 +59,9 @@ cMult #(.word_size(WORD_WIDTH)) this_complex_multiplier
 //       .d_out (o_idx )
 //     );
 
-wire [$clog2(FFT_SIZE)+2-1: 0] buff_out, buff_in; 
-assign buff_in = {wr_en, i_disp_wr_en, i_idx};
-assign {o_wr_en, o_disp_wr_en, o_idx} = buff_out;
+wire [$clog2(FFT_SIZE)+1-1: 0] buff_out, buff_in; 
+assign buff_in = {wr_en, i_idx};
+assign {o_wr_en, o_idx} = buff_out;
 
 buffer #(.word_size($clog2(FFT_SIZE)+2),.buffer_length (MULTIPLIER_DELAY ))buffer_dut 
 (

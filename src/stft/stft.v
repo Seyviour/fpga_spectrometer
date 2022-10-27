@@ -9,11 +9,10 @@ module STFT #(
     input wire signed [23: 0] SAMPLE, // FROM I2S RECEIVER
     input wire reset,
 
-    output wire disp_wr_en,
-    output wire [$clog2(FFT_SIZE)-1: 0] disp_wr_idx,
-    output wire [WORD_WIDTH*2-1:0] disp_wr_data
+    output wire wr_en,
+    output wire [$clog2(FFT_SIZE)-1: 0] wr_idx,
+    output wire [WORD_WIDTH*2-1:0] wr_data
 );
-
 
 wire [WORD_WIDTH-1:0] o_SAMPLE;
 wire start_compute; 
@@ -41,7 +40,6 @@ wire [$clog2(FFT_SIZE)-1: 0] dft_idx;
 wire dft_wr_en;
 wire [WORD_WIDTH-1: 0] oldest_sample; 
 
-wire disp_wr_en_sm; 
 STFT_SM #(.WORD_WIDTH(16) ,.FFT_SIZE(FFT_SIZE)) this_stft_sm 
     (
         .clk(clk), 
@@ -50,7 +48,6 @@ STFT_SM #(.WORD_WIDTH(16) ,.FFT_SIZE(FFT_SIZE)) this_stft_sm
         .SAMPLE(o_SAMPLE),
         .OLDEST_SAMPLE(oldest_sample),
         
-        .disp_wr_en(disp_wr_en_sm),
         .sample_diff(sample_diff),
         .sample_wr_en(sample_wr_en),
         .oldest_sample_address(oldest_sample_address), 
@@ -77,16 +74,13 @@ twiddleROM #(.N(FFT_SIZE), .word_size(WORD_WIDTH ),.memory_file (TWIDDLE_FILE)) 
       .twiddle  ( twiddle)
     );
 
-wire disp_wr_en_spu; 
 SPU #(.WORD_WIDTH(WORD_WIDTH ),.FFT_SIZE (FFT_SIZE )) this_SPU (
       .clk(clk),
       .sample_diff (sample_diff ),
-      .i_disp_wr_en(disp_wr_en_sm),
       .twiddle (twiddle ),
       .Xk_prev (Xk_prev ),
       .wr_en (dft_wr_en ),
       .o_wr_en (o_dft_wr_en ),
-      .o_disp_wr_en(disp_wr_en_spu),
 
       .i_idx (dft_idx ),
       .Xk (Xk ),
@@ -105,9 +99,9 @@ iRAM #(.WORD_WIDTH(2*WORD_WIDTH), .ADDRESS_WIDTH($clog2(FFT_SIZE))) FFT_RAM
     );
 
    
-assign disp_wr_en = disp_wr_en_spu; 
-assign disp_wr_idx = o_dft_idx;
-assign disp_wr_data = Xk; 
+assign wr_en = o_dft_wr_en; 
+assign wr_idx = o_dft_idx;
+assign wr_data = Xk; 
 
 
 initial begin
