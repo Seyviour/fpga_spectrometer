@@ -14,25 +14,28 @@ wire signed [WORD_WIDTH-1: 0] Xk_real, Xk_imag;
 assign Xk_real = Xk[WORD_WIDTH*2-1: WORD_WIDTH];
 assign Xk_imag = Xk[WORD_WIDTH-1: 0];
 
-reg [WORD_WIDTH*2-1: 0] Xk_real_sqr, Xk_imag_sqr; 
+reg signed [WORD_WIDTH*2-1: 0] Xk_real_sqr, Xk_imag_sqr; 
 
 reg [WORD_WIDTH*2: 0] magnitude_sum; 
 
-always @(posedge clk) begin
-
+always @(*) begin
     //MAGNITUDE
-    Xk_real_sqr <= Xk_real * Xk_real;
-    Xk_imag_sqr <= Xk_imag * Xk_imag; 
-    
+    Xk_real_sqr = Xk_real * Xk_real;
+    Xk_imag_sqr = Xk_imag * Xk_imag; 
+    magnitude_sum = Xk_real_sqr + Xk_imag_sqr;
 end
 
-always @(*) begin
-    magnitude_sum = Xk_real_sqr + Xk_imag_sqr;
-    log = magnitude_sum[WORD_WIDTH*2:WORD_WIDTH*2-4]; 
+always @(posedge clk) begin
+    log <= (magnitude_sum[WORD_WIDTH*2:WORD_WIDTH*2-4+1]); 
 end
 
 //I'LL JUST USE SCALING TILL I CAN FIGURE OUT THE LOG
 
+
+// initial begin
+//     $dumpfile("mag_log.vcd");
+//     $dumpvars(0, magnitudeAndLog);
+// end
 
 
     
