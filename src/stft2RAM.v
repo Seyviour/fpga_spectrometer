@@ -18,7 +18,7 @@ module stft2RAM #(
     output reg disp_wr_en,
     output wire [NO_BANKS-1:0] bank_wr,
     output wire [ADDRESS_WIDTH-1:0] addr_wr,
-    output wire [3:0] data_wr
+    output reg [3:0] data_wr
 );
 
 
@@ -40,12 +40,27 @@ always @(posedge clk)
     disp_wr_en <= wr_en && count_true;
 
 // 1 clk cycle delay
-magnitudeAndLog #(.WORD_WIDTH (WORD_WIDTH )) thisMagnitudeAndLog 
-    (
-        .clk (clk),
-        .Xk (i_data),
-        .log (data_wr)
+
+
+wire [23:0] DIN;
+wire [7:0] DOUT; 
+
+assign DIN = i_data[2*WORD_WIDTH-1-:23];
+Log2flowthru thisLog2 (
+      .DIN (DIN ),
+      .DOUT  ( DOUT)
     );
+
+always @(posedge clk) begin
+    data_wr <= DOUT[7-:4];
+end
+
+//magnitudeAndLog #(.WORD_WIDTH (WORD_WIDTH )) thisMagnitudeAndLog 
+//    (
+//        .clk (clk),
+//        .Xk (i_data),
+//        .log (data_wr)
+//    );
 
 // 1 cycle delay
 idx2RAM #(.ADDRESS_WIDTH(ADDRESS_WIDTH),.NO_FFTS(NO_FFTS),.FFT_SIZE(FFT_SIZE),.NO_BANKS (NO_BANKS)) thisidx2RAM
@@ -63,18 +78,18 @@ always @(posedge clk) begin
         OLDEST_FFT_IDX <= 0; 
     end else begin 
         if (pulse && count_true) begin 
-            if (OLDEST_FFT_IDX == NO_FFTS-1)
-                OLDEST_FFT_IDX <= 0;
+            if (OLDEST_FFT_IDX == 0)
+                OLDEST_FFT_IDX <= NO_FFTS-1;
             else
-                OLDEST_FFT_IDX <= OLDEST_FFT_IDX + 1'b1;
+                OLDEST_FFT_IDX <= OLDEST_FFT_IDX - 1'b1;
             end
         else ; 
     end
 end
 
-initial begin
-    $dumpfile("stft2RAM.vcd");
-    $dumpvars(0, stft2RAM);
-end 
+// initial begin
+//     $dumpfile("stft2RAM.vcd");
+//     $dumpvars(0, stft2RAM);
+// end 
 
 endmodule
