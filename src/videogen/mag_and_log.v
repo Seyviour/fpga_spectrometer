@@ -25,9 +25,23 @@ always @(*) begin
     magnitude_sum = Xk_real_sqr + Xk_imag_sqr;
 end
 
+wire [23:0] DIN;
+wire [7:0] DOUT;
+
+assign DIN = magnitude_sum[WORD_WIDTH*2-:23];
+
+
+Log2flowthru thisLog2 (
+      .DIN (DIN ),
+      .DOUT  ( DOUT)
+    );
+
 always @(posedge clk) begin
-    log <= (magnitude_sum[WORD_WIDTH*2:WORD_WIDTH*2-4+1]); 
+    log <= DOUT; 
 end
+// always @(posedge clk) begin
+//     log <= (magnitude_sum[WORD_WIDTH*2:WORD_WIDTH*2-4+1]); 
+// end
 
 //I'LL JUST USE SCALING TILL I CAN FIGURE OUT THE LOG
 
