@@ -30,9 +30,13 @@ module coord_to_ram #(
 reg [COORDW-1: 0] i_x;
 reg [COORDW-1: 0] i_y;
 
+localparam HORIZONTAL_BIAS = (COORDW)'(64);
+localparam VERTICAL_BIAS = (COORDW)'(40);
+
+
 always @(posedge clk) begin 
-    i_x <= COORDW'(x + 1);
-    i_y <=  y; 
+    i_x <= COORDW'(x + 1) - HORIZONTAL_BIAS;
+    i_y <=  y - 8'd20 - VERTICAL_BIAS; 
 end
 
 localparam FFT_IDX_WIDTH = $clog2(NO_FFTS);

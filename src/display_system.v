@@ -18,11 +18,19 @@ module displaySystem #(
 assign hve = hve_sync_d;
 
 
+
 localparam IDX_WIDTH=$clog2(NO_FFTS);
 localparam COORDW=16;
 localparam NO_BANKS=2;
 localparam NO_FFTS=50;
 localparam RAM_ADDR_WIDTH=12;
+
+localparam HORIZONTAL_BIAS = (COORDW)'(64);
+localparam HORIZONTAL_DRAW_END = (COORDW)'(HORIZONTAL_BIAS + 512-1);
+localparam VERTICAL_BIAS = (COORDW)'(40);
+localparam VERTICAL_DRAW_END = (COORDW)'(40 + 400-1);
+
+localparam [23:0] OUTSIDE_BOX_RGB = {8'D0, 8'D0, 8'D45}; 
 
 reg outside_box, outside_box_d;
 
@@ -61,7 +69,7 @@ delayShiftRegister #(.DATA_WIDTH(1), .DELAY_CYCLES(5)) thisBoundingDelay
     );
 
 
-delayShiftRegister #(.DATA_WIDTH(3), .DELAY_CYCLES(5)) thisSyncDelay 
+delayShiftRegister #(.DATA_WIDTH(3), .DELAY_CYCLES(6)) thisSyncDelay 
     (
         .clk(hdmi_clk),
         .datain(hve_sync),
@@ -69,11 +77,11 @@ delayShiftRegister #(.DATA_WIDTH(3), .DELAY_CYCLES(5)) thisSyncDelay
     );
 
 always @(*)
-    outside_box = (sx > 511 | sy > 399);
+    outside_box = ((sx<HORIZONTAL_BIAS || sx>HORIZONTAL_DRAW_END) || (sy < VERTICAL_BIAS || sy > VERTICAL_DRAW_END));
 
 always @(posedge hdmi_clk) begin
     if (outside_box_d)
-        rgb <= {8'b0, 8'b0, 8'd45};
+        rgb <= OUTSIDE_BOX_RGB;
     else
         rgb <= {{data_rd, data_rd}, 8'b0, 8'b0};
 end
