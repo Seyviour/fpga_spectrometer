@@ -14,14 +14,11 @@ _________________
 CURRENT STATE OF AFFAIRS
 _________________________
 
-With the simulated mic input, this comes out on the display:
+With the simulated mic input, this is the displayed output:
 
 ![Unfinished spectrometer](doc/spectro.gif)
 
 
 
-Definitely not ideal, but progress nonetheless.
 
-I suspect that there's a problem with the FFT draw order. It appears to be working in reverse (newer FFTs(spectral lines?) should be at the top and older ones at the bottom)
-
-As soon as everything works as intended, the spectrogram itself will be centered; the extra blue area will be used to display axes data/scales.
+Next step is to hook the FPGA up to real mic input, write more tests, and more documentation.
