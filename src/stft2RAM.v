@@ -42,25 +42,21 @@ always @(posedge clk)
 // 1 clk cycle delay
 
 
-wire [23:0] DIN;
-wire [7:0] DOUT; 
 
-assign DIN = i_data[2*WORD_WIDTH-1-:23];
-Log2flowthru thisLog2 (
-      .DIN (DIN ),
-      .DOUT  ( DOUT)
-    );
 
-always @(posedge clk) begin
-    data_wr <= DOUT[7-:4];
-end
+// assign DIN = i_data[2*WORD_WIDTH-1-:23];
 
-//magnitudeAndLog #(.WORD_WIDTH (WORD_WIDTH )) thisMagnitudeAndLog 
-//    (
-//        .clk (clk),
-//        .Xk (i_data),
-//        .log (data_wr)
-//    );
+
+// always @(posedge clk) begin
+//     data_wr <= DOUT[7-:4];
+// end
+
+magnitudeAndLog #(.WORD_WIDTH (WORD_WIDTH )) thisMagnitudeAndLog 
+   (
+       .clk (clk),
+       .Xk (i_data),
+       .log (data_wr)
+   );
 
 // 1 cycle delay
 idx2RAM #(.ADDRESS_WIDTH(ADDRESS_WIDTH),.NO_FFTS(NO_FFTS),.FFT_SIZE(FFT_SIZE),.NO_BANKS (NO_BANKS)) thisidx2RAM
