@@ -1,6 +1,9 @@
+`timescale 1 ns / 10 ps
+
+
 module simTOP #(
     parameter
-    A = 22
+    SIM=0
 ) (
     input wire clk,
     input wire reset,
@@ -9,7 +12,8 @@ module simTOP #(
     output wire [3:0] hdmi_tx_p
 );
 
-wire SD, WS, SCK; 
+wire SD, WS, SCK;
+
 
 i2sMicSim thisi2sMicSim 
     (
@@ -19,7 +23,7 @@ i2sMicSim thisi2sMicSim
         .SD ( SD)
     );
 
-spectroTOP2 spectroTOP2_dut (
+spectroTOP2 #(.SIM(SIM)) thisSpectroTOP2 (
       .clk (clk ),
       .reset (reset ),
       .SD (SD ),
@@ -28,6 +32,11 @@ spectroTOP2 spectroTOP2_dut (
       .hdmi_tx_n (hdmi_tx_n ),
       .hdmi_tx_p  ( hdmi_tx_p)
     );
-  
+ 
+
+initial begin
+ $dumpfile("spectrosim.vcd");
+ $dumpvars(0, simTOP); 
+end
 
 endmodule

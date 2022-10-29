@@ -1,5 +1,6 @@
 module spectroTOP2 #(
     parameter
+    SIM=0,
     FFT_SIZE=256,
     RAM_DEPTH=4096
 
@@ -17,7 +18,7 @@ module spectroTOP2 #(
 );
 
 localparam TWIDDLE_FILE="/home/saviour/study/fpga_spectrogram/src/stft/factor.txt"; 
-localparam MEM_FILE="/home/saviour/study/fpga_spectrogram/src/videogen/helpers/samplehex.txt";
+localparam MEM_FILE="";
 localparam RAM_ADDR_WIDTH=$clog2(RAM_DEPTH);
 localparam RAM_DATA_WIDTH=4;
 localparam INPUT_WORD_WIDTH=16;
@@ -36,7 +37,7 @@ wire wr_en;
 wire [FFT_IDX_WIDTH-1:0] OLDEST_FFT_IDX; 
 
 
-inputAndProcessing #(.TWIDDLE_FILE(TWIDDLE_FILE ),.WORD_WIDTH(INPUT_WORD_WIDTH ),
+inputAndProcessing #(.SIM(SIM), .TWIDDLE_FILE(TWIDDLE_FILE ),.WORD_WIDTH(INPUT_WORD_WIDTH ),
   .FFT_SIZE(FFT_SIZE ), .NO_FFTS(NO_FFTS ), .RAM_ADDRESS_WIDTH(RAM_ADDRESS_WIDTH ),
   .COUNT_HIGH (COUNT_HIGH )) thisInputAndProcessing 
   (
@@ -68,7 +69,7 @@ bankRAM #(.NO_BANKS(2),.DATA_WIDTH(RAM_DATA_WIDTH),.DEPTH(RAM_DEPTH),.MEM_FILE (
     );
 
 
-hdmi_clock_gen this_hdmi_clock_gen 
+hdmi_clock_gen #(.SIM(SIM)) this_hdmi_clock_gen 
     (
         .clk (clk ),
         .hdmi_clk_5x (hdmi_clk_5x),
@@ -93,14 +94,30 @@ displaySystem #(.FFT_SIZE(FFT_SIZE ), .DATA_WIDTH (RAM_DATA_WIDTH )) thisDisplay
         .hve (hve)
     );
 
-hdmi2 this_hdmi 
-    (
-        .reset((~hdmi_clk_lock | ~reset)),
-        .hdmi_clk(hdmi_clk),
-        .hdmi_clk_5x(hdmi_clk_5x),
-        .hve_sync(hve),
-        .rgb(rgb),
-        .hdmi_tx_n (hdmi_tx_n),
-        .hdmi_tx_p (hdmi_tx_p)
-    );
+
+wire [3:0] o_hdmi_tx_n;
+wire [3:0] o_hdmi_tx_p;
+
+if (!SIM) begin
+    assign hdmi_tx_n = o_hdmi_tx_n;
+    assign hdmi_tx_p = o_hdmi_tx_p; 
+end else begin
+    assign hdmi_tx_n = 1; 
+    assign hdmi_tx_p = 1; 
+end
+
+generate
+    if(!SIM) begin 
+        hdmi2 this_hdmi 
+            (
+                .reset((~hdmi_clk_lock | ~reset)),
+                .hdmi_clk(hdmi_clk),
+                .hdmi_clk_5x(hdmi_clk_5x),
+                .hve_sync(hve),
+                .rgb(rgb),
+                .hdmi_tx_n (o_hdmi_tx_n),
+                .hdmi_tx_p (o_hdmi_tx_p)
+            );
+    end
+endgenerate
 endmodule
