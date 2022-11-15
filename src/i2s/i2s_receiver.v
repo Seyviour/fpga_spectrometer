@@ -1,54 +1,40 @@
 module i2s_receiver (
     input wire i2s_clk,
     input wire reset, 
-    input wire SD,
-    input wire WS,
-    output wire SCK,
+    input wire SD, //i2s serial data line
+    input wire WS, //i2s l/r select 
+    output wire SCK, //i2s clock passthrough output
     output reg  [23:0] SAMPLE,
     output reg SAMPLE_VALID
 );
 
-reg [23:0] SAMPLE_i;
-reg WS_R; 
-reg [23: 0] SD_P; 
-reg [4:0] idx;
+localparam I2S_SAMPLE_WIDTH = 24; 
+
+reg [I2S_SAMPLE_WIDTH-1:0] SAMPLE_i;
+reg [31: 0] SD_P; 
+
+reg WS_R; //to check for transitions on the WS signal
+
+
 assign SCK = i2s_clk;  
 
 always @(posedge i2s_clk) begin
+    WS_R <= WS; 
+    SAMPLE_VALID <= 1'B0;     
+    SD_P <= (SD_P<<1'B1)|SD;
 
-    if (reset) begin
-        SAMPLE <= 0; 
-        idx <= 5'b0;
-        SAMPLE_VALID <= 1'b0;
-        WS_R <= WS; 
-        SD_P <= 24'b0;
-
-    end else begin
-        WS_R <= WS;
-        if ((WS == ~WS_R)) begin
-            idx <= 5'b0;
-            SAMPLE <= SD_P;
-            SD_P <= 0;
-            SAMPLE_VALID <= (~WS_R) ? 1'b1: 1'b0; 
-        end else begin
-            SAMPLE_VALID <= 1'b0; 
-            idx <= idx + 1'b1;
-            SD_P[23-idx] <= SD; 
-        end
+    if ((WS && ~WS_R)) begin
+        SAMPLE <= SD_P [30 -: I2S_SAMPLE_WIDTH];
+        SAMPLE_VALID <= 1'b1; // only left channel is used here
     end
-end
-initial begin
-    $dumpfile("i2s_receiver.vcd");
-    $dumpvars(0, i2s_receiver);
-end
 
-// genvar i;
-// generate
-//     for (i=0; i<24; i=i+1) begin: REVERSE_BITS
-//         assign SAMPLE[i] = SAMPLE_i[i];
-//     end
-// endgenerate
+    if (reset)
+        SAMPLE_VALID <= 1'b0; //last assignment wins
     
+end
+// initial begin
+//     $dumpfile("i2s_receiver.vcd");
+//     $dumpvars(0, i2s_receiver);
+// end
 
-    
 endmodule
