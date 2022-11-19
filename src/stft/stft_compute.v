@@ -35,7 +35,7 @@ assign Xk_prev_real = Xk_prev[WORD_WIDTH*2-1: WORD_WIDTH];
 assign Xk_prev_imag = Xk_prev[WORD_WIDTH-1: 0];
 
 wire signed [WORD_WIDTH-1: 0] Xk_prev_real_plus;
-assign Xk_prev_real_plus =  Xk_prev_real + sample_diff;
+assign Xk_prev_real_plus =  (Xk_prev_real + sample_diff);
 
 wire [WORD_WIDTH*2-1:0] Xk_prev_plus;
 assign Xk_prev_plus = {Xk_prev_real_plus, Xk_prev_imag};
@@ -48,16 +48,6 @@ cMult #(.word_size(WORD_WIDTH)) this_complex_multiplier
         .B(Xk_prev_plus), //INPUT **XK_prev(real) _ sample_diff 
         .C(Xk) //OUTPUT
     );
-
-// buffer #(.word_size($clog2(FFT_SIZE) ),.buffer_length (MULTIPLIER_DELAY ))buffer_d
-//     (
-//       .clk (clk ),
-//       .en(1'b1),
-//       .in_valid (),
-//       .reset (1'b0),
-//       .d_in ({i_idx}),
-//       .d_out (o_idx )
-//     );
 
 wire [$clog2(FFT_SIZE)+1-1: 0] buff_out, buff_in; 
 assign buff_in = {wr_en, i_idx};
