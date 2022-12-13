@@ -9,16 +9,3 @@ _________________
 - The specific version of the Fourier transform used here is the STFT (256 samples); 
 
 - Display is over the HDMI/DVI port on the Tang Nano 9K;
-
-
-CURRENT STATE OF AFFAIRS
-_________________________
-
-With the simulated mic input, this is the displayed output:
-
-![Unfinished spectrometer](doc/spectro.gif)
-
-
-
-
-Next step is to hook the FPGA up to real mic input, write more tests, and more documentation.
