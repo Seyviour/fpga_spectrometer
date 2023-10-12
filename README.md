@@ -54,11 +54,11 @@ As this implementation uses only block RAM (468 Kbits on the GW1NR-9), we cannot
 
 In addition to that, to maximize the available display area, this implementation draws only one part of the FFT (ignoring the associated mirror image).
 
-###
-Draw Order: The most recent sample appears at the top of the display as the oldest sample is pushed off the bottom. 
 
 ### Note
 - There are only 50 transforms on the screen at any time. I tried to spread these to cover one second by skipping updates to the display buffer.
+- Draw Order: The most recent sample appears at the top of the display as the oldest sample is pushed off the bottom. 
+
 
 ## Todo:
 - Take advantage of the 32 Mbit Flash on the Tang Nano 9K to improve FFT resolution
