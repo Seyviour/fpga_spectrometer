@@ -1,7 +1,7 @@
 module spectroTOP #(
     parameter
     COUNTHIGH = 4000,
-    TWIDDLE_FILE = "/home/saviour/study/fpga_spectrogram/src/stft/factor.txt",
+    TWIDDLE_FILE = "",
     WORD_WIDTH = 16,
     FFT_SIZE = 128,
     NO_FFTS = 50,

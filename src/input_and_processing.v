@@ -1,7 +1,7 @@
 
 module inputAndProcessing #(
     parameter
-    TWIDDLE_FILE = "/home/saviour/study/fpga_spectrogram/src/stft/factor.txt",
+    TWIDDLE_FILE = "stft/factor.txt",
     WORD_WIDTH = 16,
     FFT_SIZE = 256
 ) (
